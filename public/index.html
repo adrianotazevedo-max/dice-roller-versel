@@ -4,6 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dice Roller</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&display=swap" rel="stylesheet" />
   <style>
     * {
       box-sizing: border-box;
@@ -13,108 +16,238 @@
 
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #f0f2f5;
+      background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+      min-height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      min-height: 100vh;
-      padding: 1rem;
+      padding: 1.5rem;
     }
 
     .card {
-      background: #fff;
-      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.07);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 24px;
       padding: 2.5rem 2rem;
-      max-width: 400px;
+      max-width: 460px;
       width: 100%;
-      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 8px 48px rgba(0, 0, 0, 0.5);
       text-align: center;
+      color: #fff;
     }
 
     h1 {
       font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
       margin-bottom: 0.25rem;
-      color: #1a1a2e;
     }
 
     .subtitle {
-      color: #666;
+      color: rgba(255, 255, 255, 0.55);
       margin-bottom: 2rem;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
+    }
+
+    /* Quick-select dice buttons */
+    .dice-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .die-btn {
+      flex: 0 0 auto;
+      padding: 0.45rem 0.85rem;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 8px;
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s, color 0.15s, transform 0.1s;
+    }
+
+    .die-btn:hover {
+      background: rgba(108, 99, 255, 0.35);
+      border-color: #6c63ff;
+      color: #fff;
+    }
+
+    .die-btn.active {
+      background: #6c63ff;
+      border-color: #6c63ff;
+      color: #fff;
+    }
+
+    .die-btn:active {
+      transform: scale(0.95);
+    }
+
+    /* Custom input row */
+    .custom-row {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+      margin-bottom: 1.25rem;
     }
 
     label {
-      display: block;
-      text-align: left;
-      font-weight: 600;
-      color: #333;
-      margin-bottom: 0.5rem;
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.6);
+      white-space: nowrap;
     }
 
     input[type="number"] {
-      width: 100%;
-      padding: 0.75rem 1rem;
-      border: 2px solid #e0e0e0;
+      flex: 1;
+      padding: 0.65rem 1rem;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.18);
       border-radius: 8px;
-      font-size: 1.1rem;
+      color: #fff;
+      font-size: 1rem;
       outline: none;
       transition: border-color 0.2s;
-      margin-bottom: 1.25rem;
     }
 
     input[type="number"]:focus {
       border-color: #6c63ff;
     }
 
-    button {
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+      opacity: 0.4;
+    }
+
+    /* Roll button */
+    .roll-btn {
       width: 100%;
-      padding: 0.85rem;
-      background: #6c63ff;
+      padding: 0.9rem;
+      background: linear-gradient(135deg, #6c63ff, #a855f7);
       color: #fff;
       border: none;
-      border-radius: 8px;
+      border-radius: 12px;
       font-size: 1.1rem;
       font-weight: 700;
       cursor: pointer;
-      transition: background 0.2s, transform 0.1s;
+      transition: opacity 0.2s, transform 0.1s;
+      letter-spacing: 0.3px;
     }
 
-    button:hover {
-      background: #574fd6;
+    .roll-btn:hover:not(:disabled) {
+      opacity: 0.9;
     }
 
-    button:active {
+    .roll-btn:active:not(:disabled) {
       transform: scale(0.98);
     }
 
+    .roll-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%       { transform: translateX(-4px) rotate(-1deg); }
+      40%       { transform: translateX(4px) rotate(1deg); }
+      60%       { transform: translateX(-3px); }
+      80%       { transform: translateX(3px); }
+    }
+
+    .roll-btn.shaking {
+      animation: shake 0.12s linear infinite;
+    }
+
+    /* Result */
     .result {
       margin-top: 2rem;
-      padding: 1.5rem;
-      background: #f7f5ff;
-      border-radius: 12px;
+      padding: 1.75rem 1.5rem 1.5rem;
+      background: rgba(108, 99, 255, 0.15);
+      border: 1px solid rgba(108, 99, 255, 0.35);
+      border-radius: 16px;
       display: none;
     }
 
     .result .value {
-      font-size: 4rem;
+      font-family: 'Orbitron', monospace;
+      font-size: 5rem;
       font-weight: 900;
-      color: #6c63ff;
+      color: #a78bfa;
       line-height: 1;
+      letter-spacing: -2px;
+      text-shadow: 0 0 24px rgba(167, 139, 250, 0.5);
     }
 
     .result .message {
-      margin-top: 0.5rem;
-      color: #444;
-      font-size: 1rem;
+      margin-top: 0.6rem;
+      color: rgba(255, 255, 255, 0.65);
+      font-size: 0.95rem;
     }
 
+    /* History */
+    .history {
+      margin-top: 1.5rem;
+      text-align: left;
+    }
+
+    .history-title {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: rgba(255, 255, 255, 0.35);
+      margin-bottom: 0.6rem;
+    }
+
+    .history-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .history-list li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.4rem 0.75rem;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.7);
+      animation: fadeIn 0.25s ease;
+    }
+
+    .history-list li .hist-die {
+      font-weight: 600;
+      color: rgba(167, 139, 250, 0.9);
+    }
+
+    .history-list li .hist-val {
+      font-family: 'Orbitron', monospace;
+      font-size: 0.85rem;
+      color: #fff;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Error */
     .error {
       margin-top: 1.25rem;
       padding: 0.85rem 1rem;
-      background: #fff0f0;
-      color: #c0392b;
-      border-radius: 8px;
-      font-size: 0.95rem;
+      background: rgba(220, 38, 38, 0.15);
+      border: 1px solid rgba(220, 38, 38, 0.4);
+      color: #fca5a5;
+      border-radius: 10px;
+      font-size: 0.9rem;
       display: none;
     }
   </style>
@@ -124,10 +257,22 @@
     <h1>🎲 Dice Roller</h1>
     <p class="subtitle">Role qualquer dado, de d2 até d100</p>
 
-    <label for="sides">Número de lados</label>
-    <input type="number" id="sides" value="6" min="2" max="100" />
+    <div class="dice-grid" id="diceGrid">
+      <button class="die-btn" onclick="quickRoll(4)">d4</button>
+      <button class="die-btn active" onclick="quickRoll(6)">d6</button>
+      <button class="die-btn" onclick="quickRoll(8)">d8</button>
+      <button class="die-btn" onclick="quickRoll(10)">d10</button>
+      <button class="die-btn" onclick="quickRoll(12)">d12</button>
+      <button class="die-btn" onclick="quickRoll(20)">d20</button>
+      <button class="die-btn" onclick="quickRoll(100)">d100</button>
+    </div>
 
-    <button onclick="roll()">Rolar Dado</button>
+    <div class="custom-row">
+      <label for="sides">Personalizado:</label>
+      <input type="number" id="sides" value="6" min="2" max="100" />
+    </div>
+
+    <button class="roll-btn" id="rollBtn" onclick="roll()">🎲 Rolar Dado</button>
 
     <div class="result" id="result">
       <div class="value" id="value"></div>
@@ -135,35 +280,107 @@
     </div>
 
     <div class="error" id="error"></div>
+
+    <div class="history" id="historySection" style="display:none">
+      <div class="history-title">Últimas rolagens</div>
+      <ul class="history-list" id="historyList"></ul>
+    </div>
   </div>
 
   <script>
+    const history = [];
+    const QUICK_DICE = [4, 6, 8, 10, 12, 20, 100];
+
+    function setActiveDie(sides) {
+      document.querySelectorAll('.die-btn').forEach((btn, i) => {
+        btn.classList.toggle('active', QUICK_DICE[i] === sides);
+      });
+    }
+
+    function quickRoll(sides) {
+      document.getElementById('sides').value = sides;
+      setActiveDie(sides);
+      roll();
+    }
+
+    function animateValue(finalValue, sides, onDone) {
+      const el = document.getElementById('value');
+      const resultEl = document.getElementById('result');
+      resultEl.style.display = 'block';
+
+      let ticks = 0;
+      const totalTicks = 18;
+      const interval = setInterval(() => {
+        el.textContent = Math.floor(Math.random() * sides) + 1;
+        ticks++;
+        if (ticks >= totalTicks) {
+          clearInterval(interval);
+          el.textContent = finalValue;
+          onDone();
+        }
+      }, 35);
+    }
+
+    function addHistory(sides, value) {
+      history.unshift({ sides, value });
+      if (history.length > 5) history.pop();
+
+      const section = document.getElementById('historySection');
+      const list = document.getElementById('historyList');
+      section.style.display = 'block';
+      list.innerHTML = history.map(h =>
+        `<li><span class="hist-die">d${h.sides}</span><span class="hist-val">${h.value}</span></li>`
+      ).join('');
+    }
+
     async function roll() {
-      const sides = document.getElementById('sides').value;
+      const sidesInput = document.getElementById('sides');
+      const sides = parseInt(sidesInput.value, 10);
+      const btn = document.getElementById('rollBtn');
       const resultEl = document.getElementById('result');
       const errorEl = document.getElementById('error');
 
-      resultEl.style.display = 'none';
       errorEl.style.display = 'none';
+      btn.disabled = true;
+      btn.classList.add('shaking');
+
+      // Clear active die if sides doesn't match any quick die
+      setActiveDie(QUICK_DICE.includes(sides) ? sides : -1);
 
       try {
         const res = await fetch(`/api/roll?sides=${sides}`);
         const data = await res.json();
 
+        btn.classList.remove('shaking');
+
         if (!res.ok) {
+          resultEl.style.display = 'none';
           errorEl.textContent = data.error || 'Erro desconhecido.';
           errorEl.style.display = 'block';
+          btn.disabled = false;
           return;
         }
 
-        document.getElementById('value').textContent = data.value;
         document.getElementById('message').textContent = data.message;
-        resultEl.style.display = 'block';
+        animateValue(data.value, data.sides, () => {
+          btn.disabled = false;
+        });
+        addHistory(data.sides, data.value);
+
       } catch {
+        btn.classList.remove('shaking');
+        btn.disabled = false;
+        resultEl.style.display = 'none';
         errorEl.textContent = 'Não foi possível conectar à API.';
         errorEl.style.display = 'block';
       }
     }
+
+    // Sync active state when user types manually
+    document.getElementById('sides').addEventListener('input', function () {
+      const val = parseInt(this.value, 10);
+      setActiveDie(QUICK_DICE.includes(val) ? val : -1);
+    });
   </script>
 </body>
 </html>
