@@ -6,52 +6,247 @@
   <title>Dice Roller</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Cinzel:wght@700;900&display=swap" rel="stylesheet" />
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
+    /* ===== CSS Custom Properties — Dark theme (default) ===== */
+    :root {
+      --body-bg: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+      --card-bg: rgba(255, 255, 255, 0.07);
+      --card-border: rgba(255, 255, 255, 0.12);
+      --card-blur: blur(18px);
+      --card-shadow: 0 8px 48px rgba(0, 0, 0, 0.5);
+      --text: #fff;
+      --text-muted: rgba(255, 255, 255, 0.55);
+      --accent: #6c63ff;
+      --btn-gradient: linear-gradient(135deg, #6c63ff, #a855f7);
+      --value-color: #a78bfa;
+      --value-glow: 0 0 24px rgba(167, 139, 250, 0.5);
+      --value-font: 'Orbitron', monospace;
+      --result-bg: rgba(108, 99, 255, 0.15);
+      --result-border: rgba(108, 99, 255, 0.35);
+      --die-bg: rgba(255, 255, 255, 0.08);
+      --die-border: rgba(255, 255, 255, 0.18);
+      --die-hover-bg: rgba(108, 99, 255, 0.35);
+      --die-hover-border: #6c63ff;
+      --die-active-bg: #6c63ff;
+      --die-active-border: #6c63ff;
+      --die-text: rgba(255, 255, 255, 0.8);
+      --die-active-text: #fff;
+      --input-bg: rgba(255, 255, 255, 0.08);
+      --input-border: rgba(255, 255, 255, 0.18);
+      --input-focus-border: #6c63ff;
+      --input-text: #fff;
+      --label-color: rgba(255, 255, 255, 0.6);
+      --error-bg: rgba(220, 38, 38, 0.15);
+      --error-border: rgba(220, 38, 38, 0.4);
+      --error-text: #fca5a5;
+      --hist-bg: rgba(255, 255, 255, 0.05);
+      --hist-die-color: rgba(167, 139, 250, 0.9);
+      --hist-val-color: #fff;
+      --hist-title-color: rgba(255, 255, 255, 0.35);
+      --counter-bg: rgba(255, 255, 255, 0.08);
+      --counter-border: rgba(255, 255, 255, 0.12);
+      --counter-text: rgba(255, 255, 255, 0.65);
+      --theme-btn-bg: rgba(255, 255, 255, 0.08);
+      --theme-btn-border: rgba(255, 255, 255, 0.15);
+      --theme-btn-text: rgba(255, 255, 255, 0.65);
+      --theme-btn-active-bg: rgba(108, 99, 255, 0.45);
+      --theme-btn-active-border: #6c63ff;
+      --theme-btn-active-text: #fff;
+      --sound-btn-color: rgba(255, 255, 255, 0.5);
+      --sound-btn-hover: rgba(255, 255, 255, 0.9);
     }
+
+    /* ===== Light theme ===== */
+    body.theme-light {
+      --body-bg: linear-gradient(135deg, #dde3f0, #f1f5f9, #ede8f5);
+      --card-bg: #ffffff;
+      --card-border: #e2e8f0;
+      --card-blur: none;
+      --card-shadow: 0 8px 40px rgba(0, 0, 0, 0.1);
+      --text: #1e1b4b;
+      --text-muted: #64748b;
+      --accent: #6c63ff;
+      --btn-gradient: linear-gradient(135deg, #6c63ff, #a855f7);
+      --value-color: #6c63ff;
+      --value-glow: none;
+      --value-font: 'Orbitron', monospace;
+      --result-bg: #f5f3ff;
+      --result-border: #c4b5fd;
+      --die-bg: #f5f3ff;
+      --die-border: #c4b5fd;
+      --die-hover-bg: #ede9fe;
+      --die-hover-border: #6c63ff;
+      --die-active-bg: #6c63ff;
+      --die-active-border: #6c63ff;
+      --die-text: #4c1d95;
+      --die-active-text: #fff;
+      --input-bg: #f8fafc;
+      --input-border: #cbd5e1;
+      --input-focus-border: #6c63ff;
+      --input-text: #1e1b4b;
+      --label-color: #64748b;
+      --error-bg: #fef2f2;
+      --error-border: #fecaca;
+      --error-text: #dc2626;
+      --hist-bg: #f5f3ff;
+      --hist-die-color: #6c63ff;
+      --hist-val-color: #1e1b4b;
+      --hist-title-color: #94a3b8;
+      --counter-bg: rgba(108, 99, 255, 0.08);
+      --counter-border: rgba(108, 99, 255, 0.2);
+      --counter-text: #4c1d95;
+      --theme-btn-bg: #f5f3ff;
+      --theme-btn-border: #c4b5fd;
+      --theme-btn-text: #4c1d95;
+      --theme-btn-active-bg: #6c63ff;
+      --theme-btn-active-border: #6c63ff;
+      --theme-btn-active-text: #fff;
+      --sound-btn-color: #94a3b8;
+      --sound-btn-hover: #1e1b4b;
+    }
+
+    /* ===== RPG / D&D theme ===== */
+    body.theme-rpg {
+      --body-bg: linear-gradient(160deg, #130800, #2d1500, #0f0500);
+      --card-bg: rgba(245, 226, 180, 0.97);
+      --card-border: #c9a227;
+      --card-blur: none;
+      --card-shadow: 0 8px 56px rgba(0, 0, 0, 0.85), 0 0 0 2px #c9a227;
+      --text: #2d1b00;
+      --text-muted: #7a5c30;
+      --accent: #8b0000;
+      --btn-gradient: linear-gradient(135deg, #6b0000, #9b6e00);
+      --value-color: #8b0000;
+      --value-glow: 0 0 20px rgba(201, 162, 39, 0.45);
+      --value-font: 'Cinzel', serif;
+      --result-bg: rgba(139, 0, 0, 0.06);
+      --result-border: #c9a227;
+      --die-bg: rgba(201, 162, 39, 0.14);
+      --die-border: rgba(139, 0, 0, 0.25);
+      --die-hover-bg: rgba(201, 162, 39, 0.28);
+      --die-hover-border: #c9a227;
+      --die-active-bg: #8b0000;
+      --die-active-border: #c9a227;
+      --die-text: #4a2c00;
+      --die-active-text: #f5e6c8;
+      --input-bg: rgba(255, 255, 255, 0.55);
+      --input-border: rgba(139, 0, 0, 0.28);
+      --input-focus-border: #8b0000;
+      --input-text: #2d1b00;
+      --label-color: #7a5c30;
+      --error-bg: rgba(139, 0, 0, 0.09);
+      --error-border: rgba(139, 0, 0, 0.35);
+      --error-text: #8b0000;
+      --hist-bg: rgba(201, 162, 39, 0.1);
+      --hist-die-color: #8b0000;
+      --hist-val-color: #2d1b00;
+      --hist-title-color: #a07840;
+      --counter-bg: rgba(201, 162, 39, 0.18);
+      --counter-border: rgba(201, 162, 39, 0.5);
+      --counter-text: #4a2c00;
+      --theme-btn-bg: rgba(201, 162, 39, 0.12);
+      --theme-btn-border: rgba(139, 0, 0, 0.22);
+      --theme-btn-text: #4a2c00;
+      --theme-btn-active-bg: #8b0000;
+      --theme-btn-active-border: #c9a227;
+      --theme-btn-active-text: #f5e6c8;
+      --sound-btn-color: #7a5c30;
+      --sound-btn-hover: #2d1b00;
+    }
+
+    /* ===== Reset & Base ===== */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+      background: var(--body-bg);
       min-height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      padding: 1.5rem;
+      padding: 1.5rem 1.5rem 5rem;
     }
 
+    /* ===== Card ===== */
     .card {
-      background: rgba(255, 255, 255, 0.07);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: var(--card-bg);
+      backdrop-filter: var(--card-blur);
+      -webkit-backdrop-filter: var(--card-blur);
+      border: 1px solid var(--card-border);
       border-radius: 24px;
-      padding: 2.5rem 2rem;
+      padding: 2rem 2rem 2.5rem;
       max-width: 460px;
       width: 100%;
-      box-shadow: 0 8px 48px rgba(0, 0, 0, 0.5);
+      box-shadow: var(--card-shadow);
       text-align: center;
-      color: #fff;
+      color: var(--text);
     }
 
+    /* ===== Top bar: theme switcher + sound toggle ===== */
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.75rem;
+    }
+
+    .theme-switcher {
+      display: flex;
+      gap: 0.35rem;
+    }
+
+    .theme-btn {
+      padding: 0.32rem 0.65rem;
+      background: var(--theme-btn-bg);
+      border: 1px solid var(--theme-btn-border);
+      border-radius: 6px;
+      color: var(--theme-btn-text);
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s, color 0.15s;
+      line-height: 1.4;
+    }
+
+    .theme-btn:hover,
+    .theme-btn.active {
+      background: var(--theme-btn-active-bg);
+      border-color: var(--theme-btn-active-border);
+      color: var(--theme-btn-active-text);
+    }
+
+    .sound-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1.25rem;
+      color: var(--sound-btn-color);
+      padding: 0.2rem;
+      transition: color 0.15s, transform 0.1s;
+      line-height: 1;
+      display: flex;
+      align-items: center;
+    }
+
+    .sound-btn:hover { color: var(--sound-btn-hover); }
+    .sound-btn:active { transform: scale(0.88); }
+
+    /* ===== Title ===== */
     h1 {
       font-size: 2rem;
       font-weight: 700;
-      letter-spacing: 0.5px;
-      margin-bottom: 0.25rem;
+      letter-spacing: 0.4px;
+      margin-bottom: 0.2rem;
     }
 
     .subtitle {
-      color: rgba(255, 255, 255, 0.55);
-      margin-bottom: 2rem;
+      color: var(--text-muted);
       font-size: 0.9rem;
+      margin-bottom: 1.75rem;
     }
 
-    /* Quick-select dice buttons */
+    /* ===== Quick dice buttons ===== */
     .dice-grid {
       display: flex;
       flex-wrap: wrap;
@@ -61,12 +256,11 @@
     }
 
     .die-btn {
-      flex: 0 0 auto;
       padding: 0.45rem 0.85rem;
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.18);
+      background: var(--die-bg);
+      border: 1px solid var(--die-border);
       border-radius: 8px;
-      color: rgba(255, 255, 255, 0.8);
+      color: var(--die-text);
       font-size: 0.9rem;
       font-weight: 600;
       cursor: pointer;
@@ -74,22 +268,20 @@
     }
 
     .die-btn:hover {
-      background: rgba(108, 99, 255, 0.35);
-      border-color: #6c63ff;
-      color: #fff;
+      background: var(--die-hover-bg);
+      border-color: var(--die-hover-border);
+      color: var(--text);
     }
 
     .die-btn.active {
-      background: #6c63ff;
-      border-color: #6c63ff;
-      color: #fff;
+      background: var(--die-active-bg);
+      border-color: var(--die-active-border);
+      color: var(--die-active-text);
     }
 
-    .die-btn:active {
-      transform: scale(0.95);
-    }
+    .die-btn:active { transform: scale(0.95); }
 
-    /* Custom input row */
+    /* ===== Custom input row ===== */
     .custom-row {
       display: flex;
       gap: 0.75rem;
@@ -99,36 +291,32 @@
 
     label {
       font-size: 0.85rem;
-      color: rgba(255, 255, 255, 0.6);
+      color: var(--label-color);
       white-space: nowrap;
     }
 
     input[type="number"] {
       flex: 1;
       padding: 0.65rem 1rem;
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.18);
+      background: var(--input-bg);
+      border: 1px solid var(--input-border);
       border-radius: 8px;
-      color: #fff;
+      color: var(--input-text);
       font-size: 1rem;
       outline: none;
       transition: border-color 0.2s;
     }
 
-    input[type="number"]:focus {
-      border-color: #6c63ff;
-    }
+    input[type="number"]:focus { border-color: var(--input-focus-border); }
 
     input[type="number"]::-webkit-inner-spin-button,
-    input[type="number"]::-webkit-outer-spin-button {
-      opacity: 0.4;
-    }
+    input[type="number"]::-webkit-outer-spin-button { opacity: 0.4; }
 
-    /* Roll button */
+    /* ===== Roll button ===== */
     .roll-btn {
       width: 100%;
       padding: 0.9rem;
-      background: linear-gradient(135deg, #6c63ff, #a855f7);
+      background: var(--btn-gradient);
       color: #fff;
       border: none;
       border-radius: 12px;
@@ -139,68 +327,54 @@
       letter-spacing: 0.3px;
     }
 
-    .roll-btn:hover:not(:disabled) {
-      opacity: 0.9;
-    }
-
-    .roll-btn:active:not(:disabled) {
-      transform: scale(0.98);
-    }
-
-    .roll-btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
+    .roll-btn:hover:not(:disabled) { opacity: 0.88; }
+    .roll-btn:active:not(:disabled) { transform: scale(0.98); }
+    .roll-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
     @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      20%       { transform: translateX(-4px) rotate(-1deg); }
-      40%       { transform: translateX(4px) rotate(1deg); }
+      0%, 100% { transform: translateX(0) rotate(0); }
+      20%       { transform: translateX(-4px) rotate(-1.2deg); }
+      40%       { transform: translateX(4px) rotate(1.2deg); }
       60%       { transform: translateX(-3px); }
       80%       { transform: translateX(3px); }
     }
 
-    .roll-btn.shaking {
-      animation: shake 0.12s linear infinite;
-    }
+    .roll-btn.shaking { animation: shake 0.12s linear infinite; }
 
-    /* Result */
+    /* ===== Result ===== */
     .result {
       margin-top: 2rem;
       padding: 1.75rem 1.5rem 1.5rem;
-      background: rgba(108, 99, 255, 0.15);
-      border: 1px solid rgba(108, 99, 255, 0.35);
+      background: var(--result-bg);
+      border: 1px solid var(--result-border);
       border-radius: 16px;
       display: none;
     }
 
     .result .value {
-      font-family: 'Orbitron', monospace;
+      font-family: var(--value-font);
       font-size: 5rem;
       font-weight: 900;
-      color: #a78bfa;
+      color: var(--value-color);
       line-height: 1;
       letter-spacing: -2px;
-      text-shadow: 0 0 24px rgba(167, 139, 250, 0.5);
+      text-shadow: var(--value-glow);
     }
 
     .result .message {
       margin-top: 0.6rem;
-      color: rgba(255, 255, 255, 0.65);
+      color: var(--text-muted);
       font-size: 0.95rem;
     }
 
-    /* History */
-    .history {
-      margin-top: 1.5rem;
-      text-align: left;
-    }
+    /* ===== History ===== */
+    .history { margin-top: 1.5rem; text-align: left; }
 
     .history-title {
       font-size: 0.75rem;
       text-transform: uppercase;
       letter-spacing: 1px;
-      color: rgba(255, 255, 255, 0.35);
+      color: var(--hist-title-color);
       margin-bottom: 0.6rem;
     }
 
@@ -216,22 +390,54 @@
       justify-content: space-between;
       align-items: center;
       padding: 0.4rem 0.75rem;
-      background: rgba(255, 255, 255, 0.05);
+      background: var(--hist-bg);
       border-radius: 8px;
       font-size: 0.9rem;
-      color: rgba(255, 255, 255, 0.7);
+      color: var(--text-muted);
       animation: fadeIn 0.25s ease;
     }
 
     .history-list li .hist-die {
       font-weight: 600;
-      color: rgba(167, 139, 250, 0.9);
+      color: var(--hist-die-color);
     }
 
     .history-list li .hist-val {
       font-family: 'Orbitron', monospace;
       font-size: 0.85rem;
-      color: #fff;
+      color: var(--hist-val-color);
+    }
+
+    /* ===== Error ===== */
+    .error {
+      margin-top: 1.25rem;
+      padding: 0.85rem 1rem;
+      background: var(--error-bg);
+      border: 1px solid var(--error-border);
+      color: var(--error-text);
+      border-radius: 10px;
+      font-size: 0.9rem;
+      display: none;
+    }
+
+    /* ===== Counter (fixed bottom center) ===== */
+    .counter {
+      position: fixed;
+      bottom: 1.25rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--counter-bg);
+      border: 1px solid var(--counter-border);
+      color: var(--counter-text);
+      padding: 0.45rem 1.25rem;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      white-space: nowrap;
+      user-select: none;
+      pointer-events: none;
     }
 
     @keyframes fadeIn {
@@ -239,27 +445,36 @@
       to   { opacity: 1; transform: translateY(0); }
     }
 
-    /* Error */
-    .error {
-      margin-top: 1.25rem;
-      padding: 0.85rem 1rem;
-      background: rgba(220, 38, 38, 0.15);
-      border: 1px solid rgba(220, 38, 38, 0.4);
-      color: #fca5a5;
-      border-radius: 10px;
-      font-size: 0.9rem;
-      display: none;
+    /* ===== Responsive ===== */
+    @media (max-width: 420px) {
+      .card { padding: 1.5rem 1.25rem 2rem; }
+      h1 { font-size: 1.65rem; }
+      .result .value { font-size: 4rem; }
+      .theme-btn { padding: 0.28rem 0.5rem; font-size: 0.72rem; }
     }
   </style>
 </head>
 <body>
   <div class="card">
+
+    <!-- Top bar -->
+    <div class="top-bar">
+      <div class="theme-switcher" id="themeSwitcher">
+        <button class="theme-btn" onclick="setTheme('dark')">🌙 Dark</button>
+        <button class="theme-btn" onclick="setTheme('light')">☀️ Light</button>
+        <button class="theme-btn" onclick="setTheme('rpg')">⚔️ RPG</button>
+      </div>
+      <button class="sound-btn" id="soundBtn" onclick="toggleSound()" title="Ativar/desativar som"></button>
+    </div>
+
+    <!-- Title -->
     <h1>🎲 Dice Roller</h1>
     <p class="subtitle">Role qualquer dado, de d2 até d100</p>
 
-    <div class="dice-grid" id="diceGrid">
+    <!-- Quick dice -->
+    <div class="dice-grid">
       <button class="die-btn" onclick="quickRoll(4)">d4</button>
-      <button class="die-btn active" onclick="quickRoll(6)">d6</button>
+      <button class="die-btn" onclick="quickRoll(6)">d6</button>
       <button class="die-btn" onclick="quickRoll(8)">d8</button>
       <button class="die-btn" onclick="quickRoll(10)">d10</button>
       <button class="die-btn" onclick="quickRoll(12)">d12</button>
@@ -267,30 +482,140 @@
       <button class="die-btn" onclick="quickRoll(100)">d100</button>
     </div>
 
+    <!-- Custom input -->
     <div class="custom-row">
       <label for="sides">Personalizado:</label>
       <input type="number" id="sides" value="6" min="2" max="100" />
     </div>
 
+    <!-- Roll button -->
     <button class="roll-btn" id="rollBtn" onclick="roll()">🎲 Rolar Dado</button>
 
+    <!-- Result -->
     <div class="result" id="result">
       <div class="value" id="value"></div>
       <div class="message" id="message"></div>
     </div>
 
+    <!-- Error -->
     <div class="error" id="error"></div>
 
+    <!-- History -->
     <div class="history" id="historySection" style="display:none">
       <div class="history-title">Últimas rolagens</div>
       <ul class="history-list" id="historyList"></ul>
     </div>
+
   </div>
 
-  <script>
-    const history = [];
-    const QUICK_DICE = [4, 6, 8, 10, 12, 20, 100];
+  <!-- Fixed counter -->
+  <div class="counter" id="counter"></div>
 
+  <script>
+    const QUICK_DICE = [4, 6, 8, 10, 12, 20, 100];
+    const rollHistory = [];
+
+    let totalRolls  = parseInt(localStorage.getItem('diceRollerTotal') || '0', 10);
+    let soundEnabled = localStorage.getItem('diceRollerSound') !== 'off';
+    let currentTheme = localStorage.getItem('diceRollerTheme') || 'dark';
+
+    // ── Init ──────────────────────────────────────────────
+    applyTheme(currentTheme);
+    updateCounter();
+    updateSoundBtn();
+    setActiveDie(6);
+
+    // ── Theme ─────────────────────────────────────────────
+    function setTheme(theme) {
+      currentTheme = theme;
+      localStorage.setItem('diceRollerTheme', theme);
+      applyTheme(theme);
+    }
+
+    function applyTheme(theme) {
+      document.body.className = theme === 'dark' ? '' : 'theme-' + theme;
+      document.querySelectorAll('.theme-btn').forEach((btn, i) => {
+        btn.classList.toggle('active', ['dark', 'light', 'rpg'][i] === theme);
+      });
+    }
+
+    // ── Sound ─────────────────────────────────────────────
+    function toggleSound() {
+      soundEnabled = !soundEnabled;
+      localStorage.setItem('diceRollerSound', soundEnabled ? 'on' : 'off');
+      updateSoundBtn();
+    }
+
+    function updateSoundBtn() {
+      document.getElementById('soundBtn').textContent = soundEnabled ? '🔊' : '🔇';
+      document.getElementById('soundBtn').title = soundEnabled ? 'Desativar som' : 'Ativar som';
+    }
+
+    function playDiceSound() {
+      if (!soundEnabled) return;
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const totalDur = 0.58;
+        const clicks = 8;
+
+        for (let i = 0; i < clicks; i++) {
+          const t = ctx.currentTime + (i / clicks) * totalDur * (0.82 + Math.random() * 0.18);
+          const size = Math.floor(ctx.sampleRate * 0.042);
+          const buf  = ctx.createBuffer(1, size, ctx.sampleRate);
+          const data = buf.getChannelData(0);
+          for (let j = 0; j < size; j++)
+            data[j] = (Math.random() * 2 - 1) * Math.exp(-j / (size * 0.22));
+
+          const src    = ctx.createBufferSource();
+          src.buffer   = buf;
+          const flt    = ctx.createBiquadFilter();
+          flt.type     = 'bandpass';
+          flt.frequency.value = 900 + Math.random() * 2200;
+          flt.Q.value  = 0.55;
+          const gain   = ctx.createGain();
+          const vol    = (1 - i / clicks) * 0.38 + 0.08;
+          gain.gain.setValueAtTime(vol, t);
+          gain.gain.exponentialRampToValueAtTime(0.001, t + 0.04);
+
+          src.connect(flt); flt.connect(gain); gain.connect(ctx.destination);
+          src.start(t); src.stop(t + 0.05);
+        }
+
+        // Final landing thud
+        const lt   = ctx.currentTime + totalDur;
+        const lsz  = Math.floor(ctx.sampleRate * 0.12);
+        const lbuf = ctx.createBuffer(1, lsz, ctx.sampleRate);
+        const ld   = lbuf.getChannelData(0);
+        for (let j = 0; j < lsz; j++)
+          ld[j] = (Math.random() * 2 - 1) * Math.exp(-j / (lsz * 0.18));
+
+        const ls  = ctx.createBufferSource();
+        ls.buffer = lbuf;
+        const lf  = ctx.createBiquadFilter();
+        lf.type   = 'lowpass';
+        lf.frequency.value = 380;
+        const lg  = ctx.createGain();
+        lg.gain.setValueAtTime(0.65, lt);
+        lg.gain.exponentialRampToValueAtTime(0.001, lt + 0.13);
+
+        ls.connect(lf); lf.connect(lg); lg.connect(ctx.destination);
+        ls.start(lt); ls.stop(lt + 0.16);
+      } catch (_) { /* AudioContext unavailable */ }
+    }
+
+    // ── Counter ───────────────────────────────────────────
+    function updateCounter() {
+      const word = totalRolls === 1 ? 'dado rolado' : 'dados rolados';
+      document.getElementById('counter').textContent = `🎲 ${totalRolls} ${word}`;
+    }
+
+    function incrementCounter() {
+      totalRolls++;
+      localStorage.setItem('diceRollerTotal', totalRolls);
+      updateCounter();
+    }
+
+    // ── Dice UI helpers ───────────────────────────────────
     function setActiveDie(sides) {
       document.querySelectorAll('.die-btn').forEach((btn, i) => {
         btn.classList.toggle('active', QUICK_DICE[i] === sides);
@@ -303,54 +628,44 @@
       roll();
     }
 
+    // ── Roll animation ────────────────────────────────────
     function animateValue(finalValue, sides, onDone) {
       const el = document.getElementById('value');
-      const resultEl = document.getElementById('result');
-      resultEl.style.display = 'block';
-
+      document.getElementById('result').style.display = 'block';
       let ticks = 0;
-      const totalTicks = 18;
-      const interval = setInterval(() => {
+      const id = setInterval(() => {
         el.textContent = Math.floor(Math.random() * sides) + 1;
-        ticks++;
-        if (ticks >= totalTicks) {
-          clearInterval(interval);
-          el.textContent = finalValue;
-          onDone();
-        }
+        if (++ticks >= 18) { clearInterval(id); el.textContent = finalValue; onDone(); }
       }, 35);
     }
 
+    // ── History ───────────────────────────────────────────
     function addHistory(sides, value) {
-      history.unshift({ sides, value });
-      if (history.length > 5) history.pop();
-
+      rollHistory.unshift({ sides, value });
+      if (rollHistory.length > 5) rollHistory.pop();
       const section = document.getElementById('historySection');
-      const list = document.getElementById('historyList');
       section.style.display = 'block';
-      list.innerHTML = history.map(h =>
+      document.getElementById('historyList').innerHTML = rollHistory.map(h =>
         `<li><span class="hist-die">d${h.sides}</span><span class="hist-val">${h.value}</span></li>`
       ).join('');
     }
 
+    // ── Roll ──────────────────────────────────────────────
     async function roll() {
-      const sidesInput = document.getElementById('sides');
-      const sides = parseInt(sidesInput.value, 10);
-      const btn = document.getElementById('rollBtn');
+      const sides   = parseInt(document.getElementById('sides').value, 10);
+      const btn     = document.getElementById('rollBtn');
       const resultEl = document.getElementById('result');
-      const errorEl = document.getElementById('error');
+      const errorEl  = document.getElementById('error');
 
       errorEl.style.display = 'none';
       btn.disabled = true;
       btn.classList.add('shaking');
-
-      // Clear active die if sides doesn't match any quick die
       setActiveDie(QUICK_DICE.includes(sides) ? sides : -1);
+      playDiceSound();
 
       try {
-        const res = await fetch(`/api/roll?sides=${sides}`);
+        const res  = await fetch(`/api/roll?sides=${sides}`);
         const data = await res.json();
-
         btn.classList.remove('shaking');
 
         if (!res.ok) {
@@ -362,10 +677,9 @@
         }
 
         document.getElementById('message').textContent = data.message;
-        animateValue(data.value, data.sides, () => {
-          btn.disabled = false;
-        });
+        animateValue(data.value, data.sides, () => { btn.disabled = false; });
         addHistory(data.sides, data.value);
+        incrementCounter();
 
       } catch {
         btn.classList.remove('shaking');
@@ -376,10 +690,9 @@
       }
     }
 
-    // Sync active state when user types manually
     document.getElementById('sides').addEventListener('input', function () {
-      const val = parseInt(this.value, 10);
-      setActiveDie(QUICK_DICE.includes(val) ? val : -1);
+      const v = parseInt(this.value, 10);
+      setActiveDie(QUICK_DICE.includes(v) ? v : -1);
     });
   </script>
 </body>
