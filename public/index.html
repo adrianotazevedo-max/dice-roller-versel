@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dice Roller</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f0f2f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 1rem;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 2.5rem 2rem;
+      max-width: 400px;
+      width: 100%;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 0.25rem;
+      color: #1a1a2e;
+    }
+
+    .subtitle {
+      color: #666;
+      margin-bottom: 2rem;
+      font-size: 0.95rem;
+    }
+
+    label {
+      display: block;
+      text-align: left;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 0.5rem;
+    }
+
+    input[type="number"] {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      outline: none;
+      transition: border-color 0.2s;
+      margin-bottom: 1.25rem;
+    }
+
+    input[type="number"]:focus {
+      border-color: #6c63ff;
+    }
+
+    button {
+      width: 100%;
+      padding: 0.85rem;
+      background: #6c63ff;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    button:hover {
+      background: #574fd6;
+    }
+
+    button:active {
+      transform: scale(0.98);
+    }
+
+    .result {
+      margin-top: 2rem;
+      padding: 1.5rem;
+      background: #f7f5ff;
+      border-radius: 12px;
+      display: none;
+    }
+
+    .result .value {
+      font-size: 4rem;
+      font-weight: 900;
+      color: #6c63ff;
+      line-height: 1;
+    }
+
+    .result .message {
+      margin-top: 0.5rem;
+      color: #444;
+      font-size: 1rem;
+    }
+
+    .error {
+      margin-top: 1.25rem;
+      padding: 0.85rem 1rem;
+      background: #fff0f0;
+      color: #c0392b;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>🎲 Dice Roller</h1>
+    <p class="subtitle">Role qualquer dado, de d2 até d100</p>
+
+    <label for="sides">Número de lados</label>
+    <input type="number" id="sides" value="6" min="2" max="100" />
+
+    <button onclick="roll()">Rolar Dado</button>
+
+    <div class="result" id="result">
+      <div class="value" id="value"></div>
+      <div class="message" id="message"></div>
+    </div>
+
+    <div class="error" id="error"></div>
+  </div>
+
+  <script>
+    async function roll() {
+      const sides = document.getElementById('sides').value;
+      const resultEl = document.getElementById('result');
+      const errorEl = document.getElementById('error');
+
+      resultEl.style.display = 'none';
+      errorEl.style.display = 'none';
+
+      try {
+        const res = await fetch(`/api/roll?sides=${sides}`);
+        const data = await res.json();
+
+        if (!res.ok) {
+          errorEl.textContent = data.error || 'Erro desconhecido.';
+          errorEl.style.display = 'block';
+          return;
+        }
+
+        document.getElementById('value').textContent = data.value;
+        document.getElementById('message').textContent = data.message;
+        resultEl.style.display = 'block';
+      } catch {
+        errorEl.textContent = 'Não foi possível conectar à API.';
+        errorEl.style.display = 'block';
+      }
+    }
+  </script>
+</body>
+</html>

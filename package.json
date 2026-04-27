@@ -1,0 +1,7 @@
+{
+  "name": "dice-roller-vercel",
+  "version": "1.0.0",
+  "description": "Rolador de dados serverless rodando na Vercel",
+  "scripts": {},
+  "type": "commonjs"
+}
